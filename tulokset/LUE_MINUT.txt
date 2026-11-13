@@ -1,0 +1,2 @@
+Skriptit tallentavat tähän kuvat, taulukot ja tarkistusraportit.
+Kansion muut tulokset syntyvät, kun suoritat harjoitukset.
