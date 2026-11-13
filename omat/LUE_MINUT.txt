@@ -1,0 +1,4 @@
+Tallenna tähän omat harjoitusskriptisi.
+Avaa alkuperäinen skripti scripts-kansiosta ja valitse File > Save As.
+Esimerkki: omat/01_R_perusteet_oma.R
+Pidä scripts-kansion alkuperäiset tiedostot vertailua varten.
