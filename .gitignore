@@ -1,0 +1,15 @@
+.Rproj.user/
+.RData
+.Rhistory
+.Ruserdata
+.Renviron
+.Rprofile
+.DS_Store
+Thumbs.db
+.Rproj.user_backup/
+
+tulokset/*
+!tulokset/LUE_MINUT.txt
+
+omat/*
+!omat/LUE_MINUT.txt
