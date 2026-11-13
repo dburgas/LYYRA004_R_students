@@ -1,0 +1,486 @@
+---
+title: "R tutuksi"
+subtitle: "Itsenäiset aloitusharjoitukset kurssille LYYRA-004 Ympäristöratkaisujen menetelmät I"
+author: "Daniel Burgas"
+date: "Versio 13.11.2026"
+lang: fi
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: false
+    self_contained: true
+    highlight: null
+  word_document:
+    toc: false
+    highlight: null
+
+---
+
+
+```{r asetukset, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r html-tyylit, echo=FALSE, results='asis', eval=TRUE}
+if (knitr::is_html_output()) {
+  cat('
+<style>
+body { font-size: 17px; line-height: 1.55; color: #15212a; }
+.main-container { max-width: 948px; }
+h1, h2, h3 { color: #000; }
+code, pre {
+  font-family: Consolas, "Liberation Mono", Menlo, "DejaVu Sans Mono", monospace;
+  font-variant-ligatures: none;
+}
+pre {
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  padding: 16px;
+  background: #f4f6f8;
+}
+pre code { font-size: inherit; white-space: inherit; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td {
+  border: 1px solid #d9d9d9;
+  padding: 9px 11px;
+  text-align: left;
+  vertical-align: middle;
+}
+th { background: #e7eef3; color: #000; }
+@media (max-width: 600px) {
+  pre { font-size: 14px; padding: 12px; }
+}
+@media print {
+  pre { white-space: pre-wrap; overflow: visible; }
+}
+</style>
+')
+}
+```
+
+
+Tämän oppaan avulla saat R:n ja RStudion käyttöön, avaat projektin, ajat ja tallennat koodia sekä luet aineiston ja teet ensimmäisen kuvan. Harjoittele omaan tahtiin. Tule tukikerralle, jos jokin vaihe pysäyttää etenemisen.
+
+R-tukikerta on perjantaina 13.11.2026 klo 14.15–15.45, BK3 saali 1015. 
+
+## Miten käytät tätä pakettia
+
+1. Lue ensin asennus- ja projektiohjeet. Pura ZIP kokonaan.
+2. Avaa projektin `.Rproj`-tiedosto ja aloita skriptistä 00.
+3. Tallenna harjoitusskripteistä omat kopiot omat-kansioon.
+4. Ennusta komennon tulos, aja komento ja selitä tulos omin sanoin.
+5. Katso malliratkaisu vasta oman yrityksesi jälkeen. Kirjaa avoin kysymys tukea varten.
+
+## Etenemisjärjestys
+
+| **Vaihe** | **Tiedosto tai oppaan osa** | **Arvioitu aika** |
+| --- | --- | --- |
+| Asennus ja projekti | Oppaan osat 1–4 sekä skripti 00 | 20–45 min |
+| Peruskomennot | Skripti 01 ja tehtävät A1–A5 | 20–25 min |
+| Aineisto ja kuva | Skripti 02 ja tehtävät B1–B5 | 25–35 min |
+| Yhteiset funktiot | Skripti 03 ja tehtävät C1–C3 | 10–15 min |
+| Valmiuden tarkistus | Skripti 04 ja itsearviointi | 5–10 min |
+| Lisäpaketin asennus | Aja `scripts/install_packages.R` ennen pakettiharjoitusta | Muutama minuutti; riippuu verkkoyhteydestä |
+| Pakettiharjoitus | Skripti `scripts/05_tutustuminen_R_paketeihin.R` | 5–10 min |
+
+
+Varaa ydinharjoituksiin noin 1,5–2 tuntia. Asennusongelmat voivat pidentää aikaa. Valinnainen ggplot2-pakettiharjoitus vie lisäksi noin 5–10 minuuttia, ja paketin asennusaika riippuu verkkoyhteydestä. Ydinharjoituksissa riittävät R:n mukana tulevat toiminnot; erillisiä paketteja tai Git-komentoja ei tarvita. Näistä aloitusharjoituksista ei ole erillistä arvioitavaa palautusta.
+
+# 1 Asenna R ja RStudio
+
+R suorittaa laskut ja muun koodin. RStudio Desktop tarjoaa editorin, Consolen sekä työkalut tiedostoille ja kuville. **Asenna ne tässä järjestyksessä: ensin R, sitten RStudio.** Jos molemmat toimivat jo koneellasi, aloita alla olevasta kokeilusta.
+
+## Windows
+
+1. Avaa CRANin Windows-lataussivu ja valitse base-version tavallinen asennusohjelma.
+2. Lataa .exe-tiedosto ja suorita asennus. Tavalliset oletusvalinnat riittävät tähän harjoitukseen.
+3. Avaa RStudion virallinen lataussivu. Valitse RStudio Desktopin maksuton versio ja koneeseesi sopiva Windows-asennusohjelma. Asenna ja käynnistä RStudio.
+
+[R Windowsille](<https://cran.r-project.org/bin/windows/base/>)
+
+## macOS
+
+Lataa CRANin macOS-sivulta koneesi suorittimelle sopiva .pkg-tiedosto. Apple silicon tarkoittaa esimerkiksi M-sarjan suoritinta; Intel-koneille on oma vaihtoehtonsa. Tarkista samalla käyttöjärjestelmävaatimus. Asenna R ja sen jälkeen koneeseesi sopiva RStudio Desktop.
+
+[R macOS-koneille](<https://cran.r-project.org/bin/macosx/>)
+
+## Linux ja koneen käyttöoikeudet
+
+Seuraa CRANin oman Linux-jakelusi ohjetta ja asenna sen jälkeen jakeluun sopiva RStudio Desktop. Hallinnoidulla työkoneella asennus voi vaatia IT-tuen apua. Jos käyttöjärjestelmä ei tue nykyistä asennusohjelmaa, kirjaa versio ja kysy tuessa sopivaa vaihtoehtoa.
+
+[R Linuxille](<https://cran.r-project.org/bin/linux/>)
+
+##  Kun R on asennettu, asenna sen jälkeen RStudio
+
+[RStudio Desktopin lataukset ja järjestelmävaatimukset](<https://docs.posit.co/ide/user/download.html>)
+
+
+## Kokeile heti
+
+Avaa RStudio ja kirjoita Consoleen seuraavat komennot. Paina Enter jokaisen komennon jälkeen. Console on R-komentojen alue; valitse Console-välilehti Terminalin sijaan.
+
+```{r esimerkki-01}
+1 + 1
+R.version.string
+```
+
+Ensimmäinen tulos on 2. Toinen kertoo R:n version. Tarkka versionumero saa poiketa opettajan koneesta. Jos RStudio ei käynnisty tai löydä R:ää, siirry ongelmatilanteiden ohjeeseen.
+
+# 2 Avaa projekti ja järjestä tiedostot
+
+Projekti on koko kansio tiedostoineen. `.Rproj`-tiedosto avaa sen RStudioon. Sama kansiorakenne pitää aineiston, koodin ja tulokset yhdessä, ja samoja tiedostopolkuja voidaan käyttää eri koneilla.
+
+## Avaa mukana tuleva valmis projekti
+
+1. Lataa `LYYRA004_R_aloituspaketti.zip`. Windowsissa käytä Pura kaikki / Extract All -toimintoa (macOS:ssa ZIP avautuu yleensä kaksoisnapsauttamalla. Linuxissa käytä tiedostonhallinnan purkutoimintoa).
+2. Siirrä purettu `LYYRA004_R`-kansio helposti löydettävään paikkaan, esimerkiksi `Dokumentit/Opinnot-kansioon.` Työskentele puretussa kansiossa.
+3. Avaa `LYYRA004_R.Rproj`. Voit myös valita RStudiossa File > Open Project ja etsiä tämän tiedoston.
+4. Tarkista RStudion oikeasta yläkulmasta projektin nimi. Etsi Files-välilehdeltä alla olevat kansiot.
+
+| **Tiedosto tai kansio** | **Mitä siellä on** |
+| --- | --- |
+| `LYYRA004_R.Rproj` | Projektin avaaminen ja projektikohtaiset asetukset. |
+| scripts/ | Alkuperäiset opetus- ja harjoitusskriptit 00–04. |
+| R/ | Yhteiset apufunktiot tiedostossa `apufunktiot.R`. |
+| data/ | Alkuperäinen `seuranta.csv` sekä aineistokuvaus. |
+| omat/ | Omat skriptikopiosi ja mahdolliset omat funktiot. |
+| tulokset/ | Koodin tuottamat kuvat, taulukot ja raportit. |
+| ratkaisut/ | Tehtävien A–C malliratkaisut. |
+
+## Tarkista mistä R etsii tiedostoja
+
+```{r esimerkki-02}
+getwd()
+file.exists("data/seuranta.csv")
+```
+
+`getwd()` näyttää projektin pääkansion. Tiedostotarkistuksen pitäisi antaa `TRUE`. Polku `data/seuranta.csv` alkaa tästä pääkansiosta. Se toimii myös, kun avoin skripti sijaitsee scripts- tai omat-kansiossa. Files-välilehden kansioissa selaaminen ei itsessään vaihda R:n työkansiota.
+
+# 3 Luo projekti itse ja tarkista asetukset
+
+## Harjoittele uuden projektin luomista
+
+Voit jatkaa myös valmiilla projektilla. Tee uusi projekti eri nimellä, jotta alkuperäinen paketti jää vertailua varten.
+
+1. Valitse File > New Project > New Directory > New Project. Joissakin versioissa projektityypin nimi on Empty Project.
+2. Anna nimeksi `LYYRA004_R_oma`. Valitse parent-kansioksi esimerkiksi `Dokumentit/Opinnot` ja paina Create Project. RStudio luo pääkansion ja sen `.Rproj`-tiedoston.
+3. Luo Files-välilehden New Folder -painikkeella kansiot scripts, R, data, omat, tulokset ja ratkaisut.
+4. Kopioi puretusta aloituspaketista vastaavien alikansioiden sisältö näihin kansioihin. Kopioi tiedostot; säilytä uuden projektisi oma `.Rproj`.
+5. Aja `getwd()` ja `file.exists("data/seuranta.csv")`. Projektin nimi saa nyt olla `LYYRA004_R_oma`. Tiedostotarkistuksen tulee antaa `TRUE`.
+
+## Projektin asetukset
+
+Valitse Tools > Project Options. Mukana tulevassa projektissa seuraavat asetukset on jo määritelty. Itse luodussa projektissa tarkista ne erikseen.
+
+| **Asetus** | **Valinta** | **Miksi** |
+| --- | --- | --- |
+| Restore `.RData` into workspace at startup | No | Uusi istunto alkaa ilman aiemmin tallennettuja objekteja. |
+| Save workspace to `.RData` on exit | No / Never | Koodi ja aineisto ovat työn tallennettu perusta. |
+| Text encoding | UTF-8 | Ääkköset toimivat samoissa tiedostoissa eri koneilla. |
+
+Asetusten ryhmittely ja sanamuodot voivat vaihdella RStudio-versioittain. UTF-8 löytyy tavallisesti Code Editing -asetuksista. Tallenna muutokset.
+
+## Mitä tallennat
+
+Tallenna oma koodi `.R`-tiedostoon ja tuotetut kuvat tai taulukot tulokset-kansioon. Environment näyttää nykyisen istunnon objektit. Skriptin tallentaminen säilyttää koodin; uuden istunnon objektit syntyvät, kun ajat koodin uudelleen.
+
+# 4 Aja ja tallenna skripti
+
+Avaa `scripts/00_asennuksen_tarkistus.R` Files-välilehdeltä. Skripti on tekstitiedosto, johon R-komennot on tallennettu. Kommenttirivit alkavat merkillä # ja selittävät tehtävän.
+
+| **Työalue** | **Mitä teet siellä** |
+| --- | --- |
+| Source / editori | Luet, muokkaat ja tallennat skriptiä. |
+| Console | Näet suoritetut komennot, tulosteet ja virheviestit. |
+| Environment | Näet nykyisessä istunnossa luodut objektit. |
+| Files, Plots ja Help | Selaat tiedostoja, katsot kuvia ja luet ohjeita. |
+
+## Suorita ja tallenna
+
+1. Vie kohdistin ensimmäiselle koodiriville. Paina Ctrl + Enter Windowsissa tai Linuxissa; Macissa Cmd + Enter. Voit käyttää myös Run-painiketta.
+2. Aja seuraavat rivit järjestyksessä. Rivin kirjoittaminen tai tiedoston avaaminen ei vielä suorita komentoa.
+3. Koko skriptin voi ajaa editorin Source-painikkeella. Aloittelijalle riveittäin eteneminen helpottaa tuloksen seuraamista.
+4. Tallenna oma kopio valinnalla File > Save As, esimerkiksi `omat/01_R_perusteet_oma.R.` Käytä jatkossa `Ctrl/Cmd` + S. Säilytä `.R`-pääte.
+5. Jos näet Consolessa keskeneräisen komennon + -kehotteen, paina Esc ja tarkista sulut sekä lainausmerkit.
+
+## Asennuksen ja projektin ensimmäinen tarkistus
+
+Skripti 00 tulostaa laskun 1 + 1, R-version, työkansion ja kolmen tiedoston olemassaolon. Kaikkien tiedostotarkistusten tulee olla `TRUE`. Lopuksi syntyy `tulokset/asennustarkistus.txt.` Sen tiedot voivat auttaa tukikerralla.
+
+## Kokeile muuttaa yhtä asiaa
+
+Avaa seuraavaksi skripti 01. Tallenna oma kopio omat-kansioon. Vaihda yksi luku, suorita sitä käyttävä lasku ja tallenna skripti. Kun muutat arvoa, aja uudelleen myös ne rivit, joiden tulos riippuu siitä.
+
+Kun käytät Source-painiketta, yksittäisten lausekkeiden tulokset eivät aina tulostu automaattisesti. Paketin skripteissä käytetään siksi tarvittaessa `print()`-komentoa.
+
+# 5 Harjoittele peruskomentoja
+
+Avaa oma kopiosi skriptistä 01\_R\_perusteet.R. Ennusta ensin kunkin komennon tulos ja aja se vasta sitten. Tee omat lisäyksesi kommenttien alle.
+
+## Objekti ja lasku
+
+```{r esimerkki-03}
+pinta_ala_ha <- 4.5
+lahopuu_m3_ha <- 12
+lahopuu_yhteensa <- pinta_ala_ha * lahopuu_m3_ha
+lahopuu_yhteensa
+```
+
+Merkintä `<-` tallentaa oikealla olevan arvon vasemmalla olevalle nimelle. Objektin nimen kirjoittaminen Consoleen näyttää sen nykyisen arvon. Koodissa desimaalierotin on piste.
+
+- A1 Vaihda pinta-alaksi 6 ha ja laske lahopuun kokonaismäärä uudelleen. Mitkä rivit sinun pitää ajaa uudelleen?
+- A2 Selvitä alla olevan vektorin pituus, kolmas arvo ja suurin havaittu arvo. Käytä `length()`, hakasulkeita ja `max()`.
+
+## Vektori ja puuttuva arvo
+
+```{r esimerkki-04}
+lajimaara <- c(4, 6, 0, 8, NA)
+lajimaara[2]
+mean(lajimaara)
+mean(lajimaara, na.rm = TRUE)
+sum(is.na(lajimaara))
+```
+
+`c()` kokoaa arvot vektoriksi. Hakasulkeet valitsevat alkion; numerointi alkaa yhdestä. `mean()` on funktio, joka laskee keskiarvon. `na.rm = TRUE` on argumentti, joka ohittaa puuttuvat arvot kyseisessä laskussa.
+
+- A3 Selitä miksi keskiarvo ilman na.rm-argumenttia on `NA`. Miksi nolla jää mukaan toiseen laskuun?
+- A4 Luo oma vektori `c(2, 4, 6, NA)`. Laske sen keskiarvo puuttuva arvo ohittaen ja puuttuvien arvojen määrä.
+- A5 Lisää oma #-kommentti, joka selittää yhden oppimasi asian.
+
+`NA` tarkoittaa puuttuvaa tietoa. Nolla on tässä havaittu lajimäärä. Puuttuvien arvojen ohittaminen ei muuta niitä nolliksi eikä korjaa puuttumisen mahdollista harhaa. R erottaa isot ja pienet kirjaimet: `lajimaara` ja `Lajimaara` ovat eri nimiä.
+
+# 6 Lue ja tarkista aineisto
+
+Avaa skripti 02\_aineisto\_ja\_kuva.R ja tallenna oma kopio. Aineisto on kuvitteellisen suon ennallistamisseurannan simuloitu opetusaineisto. Se ei ole todellisen hankkeen vaikutusarvio.
+
+```{r esimerkki-05}
+seuranta <- read.csv("data/seuranta.csv",
+                     fileEncoding = "UTF-8",
+                     na.strings = "NA",
+                     stringsAsFactors = FALSE)
+head(seuranta)
+str(seuranta)
+dim(seuranta)
+```
+
+CSV on pilkuilla eroteltu tekstitiedosto. Taulukon sarakkeet ovat muuttujia. Yksi rivi on yhden pysyvän ruudun yksi mittauskäynti. Lue aineiston tarkempi kuvaus tiedostosta `data/aineistokuvaus.md`; se avautuu tekstinä myös RStudiossa.
+
+| **Sarake** | **Merkitys** |
+| --- | --- |
+| `kohde_id` ja `ruutu_id` | Kohteen ja pysyvän ruudun tunnisteet. |
+| ryhma ja jakso | ennallistaminen / vertailu sekä ennen / `jalkeen`. |
+| vuosi ja kaynti | Mittausvuosi ja käyntinumero 1–4. |
+| `vesipinta_cm` | Vedenpinnan korkeus maanpintaan nähden; negatiivinen on alapuolella. |
+| `rahkasammal_peitto` | Peittävyys prosentteina; mukana on puuttuvia arvoja. |
+| `lajimaara` | Ruudussa havaittu lajimäärä. |
+
+## Tee tehtävät B1 ja B2
+
+- B1 Selvitä taulukon rivien ja sarakkeiden määrä. Selitä omin sanoin mitä yksi rivi tarkoittaa.
+- B2 Selvitä kohteiden määrä, pysyvien ruutujen määrä sekä puuttuvien peittävyysarvojen määrä. Miksi mittausrivien määrä ei ole sama kuin kohteiden määrä?
+
+```{r esimerkki-06}
+length(unique(seuranta$kohde_id))
+length(unique(seuranta$ruutu_id))
+sum(is.na(seuranta$rahkasammal_peitto))
+```
+
+`$` valitsee sarakkeen nimeltä. `unique()` hakee eri arvot. Tässä toimenpiteen yksikkö on kohde; samojen ruutujen toistetut mittaukset kuuluvat samoille kohteille.
+
+# 7 Tee kuva ja tallenna tulokset
+
+Jatka oman skriptisi 02 kohtiin B3–B5. Tavoitteena on rajata rivejä, piirtää niiden jakauma ja tallentaa kuva tiedostoksi.
+
+```{r esimerkki-07}
+ennen <- subset(seuranta, jakso == "ennen")
+nrow(ennen)
+mean(ennen$vesipinta_cm)
+hist(ennen$vesipinta_cm,
+     main = "Vesipinta ennen",
+     xlab = "Vesipinta (cm)",
+     ylab = "Mittausten lukumäärä")
+```
+
+`subset()` valitsee tässä ennen-jakson rivit. `==` vertailee arvoja. Histogrammin vaakasuunnassa on vedenpinnan korkeus ja pystysuunnassa mittausten määrä. Kuva avautuu Plots-välilehdelle.
+
+- B3 Luo samalla tavalla `jalkeen`-taulukko ja selvitä sen rivimäärä. Käytä luokan nimeä `jalkeen` ilman ääkkösiä.
+- B4 Tee jälkeen-jaksolle histogrammi ja anna sille kuvaava otsikko. Selitä mitä kuvasta voi päätellä. Histogrammi ei yksin osoita toimenpiteen vaikutusta.
+
+## Tallenna kuva koodista
+
+```{r esimerkki-08}
+pdf("tulokset/vesipinta_jalkeen.pdf",
+    width = 7, height = 5)
+hist(jalkeen$vesipinta_cm,
+     main = "Vesipinta jälkeen",
+     xlab = "Vesipinta (cm)",
+     ylab = "Mittausten lukumäärä")
+dev.off()
+```
+
+`pdf()` aloittaa kuvan kirjoittamisen tiedostoon. Sen jälkeen ajettu kuva piirtyy tiedostoon. `dev.off()` sulkee tiedoston; aja myös tämä rivi. Skripti 02 tallentaa valmiiksi ennen-kuvan ja aineiston tarkistustaulukon. Kansio tulokset on jo mukana paketissa.
+
+- B5 Tallenna oma jälkeen-kuvasi uudella nimellä ja avaa PDF tarkistaaksesi sen. Tallenna myös oma skriptisi.
+- Valitse Session > Restart R. Aja oma skriptisi 02 alusta asti uudelleen. Varmista, että se tuottaa aineiston ja kuvat uudessa istunnossa.
+
+# 8 Käytä yhteisiä funktioita
+
+Avaa skripti 03\_yhteiset\_funktiot.R. Tämä skripti käyttää `R/apufunktiot.R-tiedostossa` määriteltyjä funktioita. Riippuvuus näkyy skriptin alussa.
+
+```{r esimerkki-09}
+source("R/apufunktiot.R", encoding = "UTF-8")
+seuranta <- lue_seuranta("data/seuranta.csv")
+puuttuvia(seuranta$rahkasammal_peitto)
+cm_metreiksi(c(-30, -10, 0, NA))
+```
+
+`source()` suorittaa tiedoston koodin. Apufunktiotiedosto määrittelee tässä funktiot; aineisto luetaan vasta `lue_seuranta`()-kutsussa. Funktio palauttaa taulukon, joka tallennetaan seuranta-objektiin. R-kansio ei lataudu automaattisesti projektia avattaessa.
+
+## Katso myös funktion sisään
+
+```{r esimerkki-10}
+puuttuvia <- function(x) {
+  sum(is.na(x))
+}
+```
+
+Funktion nimi on puuttuvia. Syöte x saa funktiokutsussa annetun vektorin arvon. Funktion viimeinen lauseke palauttaa tuloksen, tässä puuttuvien arvojen lukumäärän.
+
+- C1 Avaa `apufunktiot.R` ja etsi puuttuvia-funktio. Selitä sen syöte ja tulos.
+- C2 Muunna 25 cm metreiksi `cm_metreiksi`()-funktiolla. Miksi `NA` säilyy puuttuvana?
+- C3 Tallenna ja käynnistä R uudelleen. Kokeile `cm_metreiksi`(25) ennen source-riviä. Aja sen jälkeen source-rivi ja kokeile uudelleen. Mitä muuttui?
+
+## Valinnainen oma funktio
+
+Luo `omat/omat_funktiot.R` ja tallenna siihen vain tämä funktiomäärittely.
+
+```{r esimerkki-11}
+kaksinkertaista <- function(x) { 2 * x }
+```
+
+Aja seuraavat rivit erillisessä harjoitusskriptissäsi. Ne lataavat juuri tallentamasi funktion ja käyttävät sitä.
+
+```{r esimerkki-12}
+source("omat/omat_funktiot.R", encoding = "UTF-8")
+kaksinkertaista(7)
+```
+
+Kun muokkaat funktiotiedostoa, tallenna se ja aja source-rivi uudelleen. Jokainen harjoitusskripti lataa tarvitsemansa toiminnot itse, joten edellisen tunnin istuntoa ei tarvitse säilyttää.
+
+# 9 Tarkista valmiutesi
+
+Avaa `scripts/04_valmiustarkistus.R.` Se lataa tarvitsemansa funktiot ja aineiston sekä tarkistaa, löytyvätkö skriptin 02 tuottamat kuva ja taulukko. Tulokset tallentuvat tiedostoon `tulokset/valmiustarkistus.txt.`
+
+## Osaan nämä asiat ennen aineistoharjoituksia
+
+- Avaan projektin `.Rproj`-tiedostosta ja löydän aineiston sekä skriptit.
+- Ajan koodirivin ja tallennan oman `.R`-skriptin.
+- Muutan yhtä lukua, saraketta tai kuvaotsikkoa ja ajan tuloksen uudelleen.
+- Luen CSV:n ja selitän mitä yksi rivi ja yksi sarake tarkoittavat.
+- Erotan puuttuvan arvon `NA` havaitusta nollasta.
+- Teen ja tallennan kuvan sekä löydän tiedoston.
+- Ymmärrän miksi source-rivi on mukana funktioita käyttävässä skriptissä.
+- Pystyn näyttämään koodin ja virheviestin, jos tarvitsen apua.
+
+Teknisen tarkistuksen `TRUE`-rivit osoittavat tiedostojen ja toimintojen löytymistä. Tarkista ymmärrys yllä olevilla kysymyksillä. Kirjaa yksi kohta, jota haluat vielä harjoitella.
+
+## Valinnainen tutustuminen paketteihin
+
+Ydinharjoitukset 00–04 toimivat ilman lisäpaketteja. Jos haluat kokeilla ggplot2-kuvaa:
+
+1. Avaa `scripts/install_packages.R` ja aja koko skripti kerran Source-painikkeella. Se asentaa ggplot2-, janitor-, tidyverse- ja lme4-paketit, jos niitä ei ole vielä asennettu.
+2. Avaa ja aja `scripts/05_tutustuminen_R_paketeihin.R`. Tämä skripti käyttää ggplot2:ta, piirtää aineiston jakauman ja tallentaa kuvan tiedostoon `tulokset/vesipinta_ggplot2.pdf`. Janitor, tidyverse ja lme4 ovat valmiina kurssin myöhempiä harjoituksia varten.
+
+Asennus vaatii verkkoyhteyden ja tehdään tavallisesti vain kerran. `library(ggplot2)` suoritetaan jokaisessa uudessa R-istunnossa, jossa pakettia tarvitaan. Uuden R-version jälkeen ggplot2 voi olla asennettava uudelleen.
+
+## Kun jatkat kurssin muihin harjoituksiin
+
+Säilytä sama pääkansio ja rakenne. Kopioi uudet opettajan skriptit scripts-kansioon sekä niiden tarvitsemat aineistot ja funktiot ohjeen mukaisesti data- ja R-kansioihin. Tallenna omat muokkauksesi omat-kansioon.
+
+# 10 Ratkaise tavallisimmat ongelmat
+
+| **Tilanne tai viesti** | **Mitä tarkistat ensin** |
+| --- | --- |
+| RStudio ei käynnisty tai löydä R:ää | Onko R asennettu ennen RStudiota? Tarkista käyttöjärjestelmä ja asennusohjelman vaatimukset. Kirjaa virhe tuelle. |
+| cannot open file tai file.exists antaa `FALSE` | Pura ZIP kokonaan. Avaa oikea `.Rproj`. Tarkista `getwd()`, tiedoston nimi sekä data- ja R-kansioiden sijainti. |
+| object ... not found | Aja objektin luova rivi ensin. Tarkista nimen kirjoitusasu ja isot sekä pienet kirjaimet. |
+| could not find function | Aja tarvittava `source()`- tai `library()`-rivi. Tarkista funktion nimi. |
+| unexpected symbol tai Consoleen jää + | Tarkista sulut, pilkut ja suorat lainausmerkit. Paina Esc ja aja korjattu komento. Kopioi koodi mieluiten `.R`-tiedostosta. |
+| Keskiarvon tulos on `NA` | Tarkista puuttuvat arvot. Harjoituksessa voit käyttää `na.rm = TRUE` ja kertoa, mitä se tekee. |
+| Kuva ei näy tai PDF on tyhjä | Ajoitko piirtokomennon? Jos `pdf()` on avattu, aja kuva sen jälkeen ja sulje tiedosto `dev.off()`-rivillä. |
+| Ääkköset näkyvät väärin | Avaa ja tallenna skripti UTF-8-muodossa. Käytä mukana olevia alkuperäisiä tiedostoja ja aineiston lukurivin fileEncoding-valintaa. |
+| there is no package called ... | Tämä koskee lisäpakettia. Asenna se tarvittaessa ennen `library()`-kutsua. Ydinharjoitukset eivät tarvitse ggplot2:ta. |
+| permission denied tiedostoa tallennettaessa | Tarkista, että kansio on purettu ja sinulla on siihen kirjoitusoikeus. Kokeile omaa Dokumentit-kansiotasi. |
+
+## Valmistaudu tukikertaan
+
+Ota mukaan kone ja tiedot siitä, mihin asti pääsit. Näytä ongelman aiheuttava koodirivi, koko virheviesti, odottamasi tulos ja `getwd()`-komennon tulos. Skriptin 00 raportista löytyy R-versio. Voit näyttää virheestä myös kuvakaappauksen.
+
+Jos ohjelmiston asennus ei onnistu, kirjaa koneen käyttöjärjestelmä ja se vaihe, johon asennus pysähtyy. Tukikerralle voi tulla ilman valmiita harjoituksia.
+
+# 11 Tarkista harjoitusten vastaukset
+
+Katso nämä oman yrityksesi jälkeen. Ajettavat malliratkaisut löytyvät ratkaisut-kansiosta. Oman koodisi ei tarvitse olla sanasta sanaan samanlainen, jos se tekee saman laskun.
+
+| **Tehtävä** | **Tarkistettava tulos tai selitys** |
+| --- | --- |
+| A1 | 6 × 12 = 72 m³. Aja muuttuneen pinta-alan rivi ja sitä käyttävä kokonaismäärän lasku uudelleen. |
+| A2 | Vektorissa on 5 alkiota. Kolmas arvo on 0. Suurin havaittu arvo on 8. |
+| A3 | Ensimmäinen keskiarvo on `NA`; puuttuva arvo ohittaen keskiarvo on 4.5. Puuttuvia arvoja on 1. Nolla jää laskuun havaittuna arvona. |
+| A4 | Vektorin `c(2, 4, 6, NA)` keskiarvo puuttuva arvo ohittaen on 4. Puuttuvia arvoja on 1. |
+| A5 | Oma #-kommentti selittää koodia. Kommentti ei ole suoritettava komento. |
+| B1 | 144 riviä ja 9 saraketta. Yksi rivi on yhden ruudun yksi mittauskäynti. |
+| B2 | 12 kohdetta, 36 pysyvää ruutua ja 2 puuttuvaa peittävyysarvoa. Kohteita on 6 kummassakin ryhmässä. |
+| B3 | 72 riviä ennen ja 72 jälkeen. Vesipinnan keskiarvo ennen on noin -31.68 cm ja jälkeen -25.29 cm. |
+| B4 ja B5 | Jälkeen-kuvassa on `jalkeen`-taulukon jakauma. Oma PDF löytyy tulokset-kansiosta. Kuvan tarkka ulkoasu voi vaihdella. |
+| C1 | Syöte on vektori. `puuttuvia()` palauttaa puuttuvien arvojen lukumäärän; peittävyydessä tulos on 2. |
+| C2 | 25 cm on 0.25 m. Puuttuva arvo pysyy puuttuvana myös yksikkömuunnoksessa. |
+| C3 | Uudessa istunnossa funktiota ei vielä ole. `source()` suorittaa tallennetut funktiomäärittelyt, minkä jälkeen kutsu toimii. |
+
+## Oma työ on valmis tähän aloitukseen
+
+Tallenna skriptisi ja varmista, että saat ainakin skriptin 02 ajettua uudessa R-istunnossa. Kirjaa epäselvä kohta tuelle. Biodiversiteettimittarit, ryhmien vertailut ja tilastolliset mallit käsitellään myöhemmillä opetuskerroilla.
+
+# 12 Käsitteet ja tukimateriaalit
+
+| **Käsite** | **Tässä oppaassa** |
+| --- | --- |
+| Projekti | Työn tiedostot sisältävä kansio ja sen `.Rproj`-tiedosto. |
+| Työkansio | Kansio, josta suhteellinen tiedostopolku alkaa; tarkista `getwd()`. |
+| Skripti | Tallennettu `.R`-tekstitiedosto, jossa on komentoja ja kommentteja. |
+| Objekti | Nimellä tallennettu arvo tai rakenne, esimerkiksi vektori tai taulukko. |
+| Funktio ja argumentti | Funktio suorittaa tehtävän; argumentti määrittää sille syötteen tai valinnan. |
+| `NA` | Puuttuva arvo. Sen tulkinta eroaa havaitusta nollasta. |
+| Paketti | Kokoelma R:n lisätoimintoja. `install.packages()` asentaa ja `library()` lataa. |
+
+## Ohjelmistot ja viralliset ohjeet
+
+Asennussivujen valikoima ja vaatimukset muuttuvat. Valitse omalle koneellesi sopiva julkaisu. Alla olevat linkit on tarkistettu 12.11.2026.
+
+[R ja käyttöjärjestelmäkohtaiset lataukset](<https://cran.r-project.org/>)
+
+[RStudio Desktopin lataukset](<https://docs.posit.co/ide/user/download.html>)
+
+[RStudio projektien käyttö ja asetukset](<https://docs.posit.co/ide/user/ide/guide/code/projects.html>)
+
+[R dokumentaatio source komennosta](<https://stat.ethz.ch/R-manual/R-patched/library/base/html/source.html>)
+
+## Lisälukeminen omaan tahtiin
+
+Jos haluat kerrata samoja taitoja toisesta lähteestä, aloita yhdestä alla olevasta luvusta. Kokonaisia kirjoja ei tarvitse lukea ennen kurssin R-harjoituksia.
+
+[R for Data Science luku 2 Workflow basics](<https://r4ds.hadley.nz/workflow-basics.html>)
+
+[R for Data Science luku 6 Scripts and projects](<https://r4ds.hadley.nz/workflow-scripts.html>)
+
+[Hands On Programming with R](<https://rstudio-education.github.io/hopr/>)
+
+Harjoitusten koodi ja aineisto ovat tässä paketissa. Seuranta-aineisto on simuloitu opetukseen. Sen arvoista ei tehdä päätelmiä todellisen ennallistamishankkeen vaikutuksista.
