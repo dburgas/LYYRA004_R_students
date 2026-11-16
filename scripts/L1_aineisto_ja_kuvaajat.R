@@ -98,8 +98,29 @@ p_vuodet <- ggplot(pilis, aes(treatment, Aba.ate, colour = treatment)) +
   labs(x = "Käsittely", y = "Abax, saalis", colour = "Käsittely")
 print(p_vuodet)
 
-# OMA TEHTÄVÄ (15 min):
-# 1. Kuvaa Car.sch vuonna 2018 kaikissa viidessä käsittelyssä.
-# 2. Rajaa sama aineisto C- ja CC-aloihin ja piirrä kuva uudelleen.
-# 3. Tarkista 12 riviä ja 6 alaa / käsittely. 
-# Kuoppapyydyksen saalis kuvaa aktiivisuuden ja runsauden yhteisvaikutusta.
+# OMA TEHTÄVÄ (15 min) ---------------------------------------------------
+# Tavoite: harjoittele vasteen vaihtamista, aineiston rajaamista ja
+# rajauksen tarkistamista.
+
+# Car.sch tarkoittaa lajia Carabus scheidleri.
+
+# 1. Tee pistekuva Car.sch-lajin vuoden 2018 saaliista.
+#    Käytä aineistoa d18 ja näytä kuvassa kaikki viisi käsittelyä.
+#
+#    VINKKI: kopioi aikaisempi Abax-kuvan ggplot-koodi ja vaihda
+#    y-muuttujaksi Aba.ate-muuttujan tilalle Car.sch.
+
+# 2. Tee uusi aineisto, jossa ovat mukana vain:
+#    C  = käsittelemätön vertailumetsä
+#    CC = avohakkuu
+#
+#    Tee sen jälkeen Car.sch-lajin saaliista uusi pistekuva käyttäen
+#    tätä rajattua aineistoa.
+
+# 3. Tarkista, että rajaus onnistui:
+#    - count()-tuloksessa pitää olla 6 C-koealaa ja 6 CC-koealaa
+#    - nrow()-tuloksen pitää olla 12
+
+# 4. Vertaa kuvia ja mietti yksi kuvaileva havainto:
+#    Kummassa käsittelyssä Car.sch-saaliit näyttävät olevan suurempia?
+#    Muista: pelkkä vuoden 2018 kuva ei vielä osoita hakkuiden vaikutusta.
